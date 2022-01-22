@@ -12,6 +12,7 @@ pg.font.init()
 
 class Font:
     consolas_b24 = pg.font.Font(package_dir / 'fonts/consolab.ttf', 24)
+    consolas_b36 = pg.font.Font(package_dir / 'fonts/consolab.ttf', 36)
     cambria30 = pg.font.Font(package_dir / 'fonts/cambria.ttc', 30)
     verdana23 = pg.font.Font(package_dir / 'fonts/verdana.ttf', 23)
     verdana26 = pg.font.Font(package_dir / 'fonts/verdana.ttf', 26)

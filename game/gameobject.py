@@ -15,7 +15,7 @@ class GameObject:
                  kill_func: Callable | None = None,
                  ) -> None:
         self.size = texture.get_size() if size is None else size
-        self.texture = pg.transform.scale(texture, self.size)
+        self.texture = self.orig_texture = pg.transform.scale(texture, self.size)
         if angle:
             self.texture = pg.transform.rotate(self.texture, angle)
             self.size = self.texture.get_size()
@@ -44,19 +44,26 @@ class GameObject:
         return pg.Rect(self.pos, self.size)
 
     @property
-    def center(self) -> tuple[int, int]:
-        return self.rect.center
+    def center(self) -> Vector2:
+        return Vector2(self.rect.center)
+
+    @center.setter
+    def center(self, value: Vector2 | tuple[int, int]) -> None:
+        self.pos += (Vector2(value) - self.center)
+        assert self.center == Vector2(value)
 
     def _center(self):
         self.pos -= Vector2(self.size) / 2
 
     def set_angle(self, angle: float) -> None:
-        self.texture = pg.transform.rotate(self.texture, angle)
+        self.texture = pg.transform.rotate(self.orig_texture, angle)
+        c = self.center
         self.size = self.texture.get_size()
-        self.pos = self.rect.center - Vector2(self.size) / 2
+        self.center = c
+        # self.pos = self.center - Vector2(self.size) / 2
 
     def angle_towards(self, point: Vector2) -> None:
-        self.set_angle((Vector2(point) - Vector2(self.rect.center)).angle_to((0, 1)))
+        self.set_angle((Vector2(point) - Vector2(self.center)).angle_to((0, 1)))
 
     def draw(self, window: pg.Surface) -> None:
         if self.visible:
