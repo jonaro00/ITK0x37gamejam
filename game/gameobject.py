@@ -21,7 +21,7 @@ class GameObject:
             self.size = self.texture.get_size()
         self._pos = Vector2(pos)
         if centered:
-            self.pos -= Vector2(self.size) / 2
+            self._center()
         self.visible = visible
         self.kill = lambda: kill_func(self) if kill_func else lambda: None
 
@@ -46,6 +46,9 @@ class GameObject:
     @property
     def center(self) -> tuple[int, int]:
         return self.rect.center
+
+    def _center(self):
+        self.pos -= Vector2(self.size) / 2
 
     def set_angle(self, angle: float) -> None:
         self.texture = pg.transform.rotate(self.texture, angle)
