@@ -40,8 +40,9 @@ class Core:
         self.mouse_released = defaultdict(bool)
 
         self.gameover = False
-        self.hp = 10
+        self.hp = 5
         self.points = 0
+        self.heart = GameObject(self.GFX['heart.png'])
 
         self.bg = GameObject(self.GFX['background.png'])
 
@@ -135,6 +136,7 @@ class Core:
             self.enemies.append(choice(self.enemy_types)(
                 size=self.enemy_size,
                 kill_func=self.enemies.remove,
+                speed_multiplier=1+self.points/100
                 ))
 
 
@@ -210,13 +212,16 @@ class Core:
         pg.draw.line(self.window, (0,0,0), self.slingshot_left_arm, self.snowball.center if self.draw_band else self.slingshot_center, 4)
         pg.draw.line(self.window, (0,0,0), self.slingshot_right_arm, self.snowball.center if self.draw_band else self.slingshot_center, 4)
 
+        tools.Font.write(self.window, tools.Font.consolas_b36, f'Points: {self.points}', pos=(2, self.window_height), anchor=6, color=(0,0,0))
+        for i in range(self.hp):
+            self.heart.pos = (2 + 36*i, self.window_height-72)
+            self.heart.draw(self.window)
+
         for e in self.enemies:
             e.draw(self.window)
 
         self.snowball.draw(self.window)
 
-        tools.Font.write(self.window, tools.Font.consolas_b36, f'Points: {self.points}', pos=(2, self.window_height), anchor=6, color=(0,0,0))
-        tools.Font.write(self.window, tools.Font.consolas_b36, f'HP: {self.hp}', pos=(2, self.window_height-36), anchor=6, color=(0,0,0))
         if self.gameover:
             tools.Font.write(self.window, tools.Font.consolas_b36, 'Game over', pos=self.window_rect.center, anchor=4, color=(255,0,0))
             tools.Font.write(self.window, tools.Font.consolas_b36, 'Press [Return] to play again', pos=Vector2(self.window_rect.center)+(0,36), anchor=4, color=(255,0,0))
@@ -243,7 +248,7 @@ class Enemy(GameObject):
     spawn_x = None
     spawn_y = None
     spawn_y_variance = 0
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, speed_multiplier=1, **kwargs) -> None:
         super().__init__(
             self._texture,
             *args,
@@ -256,7 +261,7 @@ class Enemy(GameObject):
                 ),
             **kwargs
             )
-        self.move = Vector2(-self.speed, 0)
+        self.move = Vector2(-self.speed * speed_multiplier, 0)
 
     def update(self) -> None:
         self.pos += self.move
