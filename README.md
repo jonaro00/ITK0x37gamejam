@@ -2,6 +2,8 @@
 
 Another game featuring Nat and several of the ITK Discord emojis.
 
+![image](https://user-images.githubusercontent.com/54029719/150679509-bf78028e-9e7c-4ec7-9fa4-7f8d7d7081f7.png)
+
 ## Getting Started
 
 Python 3.10+ required.
